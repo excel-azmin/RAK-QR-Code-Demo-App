@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  position: relative;
+  overflow-x: hidden;
+}
+@layer components {
+  .container {
+    @apply max-w-[800px] xl:max-w-[1100px] 2xl:max-w-[1500px] px-5 mx-auto;
+  }
+}
