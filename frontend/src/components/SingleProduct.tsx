@@ -1,7 +1,11 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { IoArrowBackOutline } from "react-icons/io5";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
+import { setModal } from "../redux/slice/ModalSlice";
+import { RootState } from "../redux/store/store";
+import Modal from "./Modal";
 
 type Props = {};
 type Item = {
@@ -18,10 +22,12 @@ type Item = {
 };
 
 const SingleProduct = ({}: Props) => {
+  const modal = useSelector((state: RootState) => state?.modal?.modal);
   const [item, setItem] = useState<Item | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const { id } = useParams();
+  const dispatch = useDispatch();
   const url = process.env.BASE_URL;
 
   useEffect(() => {
@@ -64,12 +70,15 @@ const SingleProduct = ({}: Props) => {
       <div className="w-full border rounded">
         <img
           src={`${url}/uploads/item-image/${item?.productImage}`}
+          onClick={() => dispatch(setModal(true))}
           alt={""}
-          className="object-cover object-center w-full rounded-t-md max-h-[500px]"
+          title="Click"
+          // className="border object-center -md h-full min-h-[240px] sm:min-h-[340px] md:min-h-[400px] xl:min-h-[440px]"
+          className="object-cover object-center w-full rounded-t-md max-h-[500px] cursor-pointer"
         />
         <div className="flex flex-wrap justify-between w-full p-4">
           <div className="space-y-2 w-full md:w-[50%]">
-            <h3 className="text-xl 2xl:text-3xl font-medium text-violet-700 mt-5">
+            <h3 className="text-xl 2xl:text-2xl font-medium text-violet-700 mt-5">
               {item?.itemName}
             </h3>
             <Title title="Series" value={item?.series} />
@@ -83,6 +92,21 @@ const SingleProduct = ({}: Props) => {
           />
         </div>
       </div>
+
+      {modal && (
+        <Modal
+          title="Product Image"
+          className="max-w-[90%] md:max-w-[90%] lg:max-w-[90%] xl:max-w-[72%] 2xl:max-w-[60%] "
+        >
+          <div className="flex justify-center items-center text-center">
+            <img
+              src={`${url}/uploads/item-image/${item?.productImage}`}
+              alt={""}
+              className="border object-center h-full min-h-[240px] sm:min-h-[340px] md:min-h-[400px] xl:min-h-[440px] "
+            />
+          </div>
+        </Modal>
+      )}
     </div>
   );
 };

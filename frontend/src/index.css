@@ -10,4 +10,15 @@ body {
   .container {
     @apply max-w-[800px] xl:max-w-[1100px] 2xl:max-w-[1500px] px-5 mx-auto;
   }
+  .header .active {
+    @apply !text-violet-600;
+  }
+}
+
+.no-scroll {
+  overflow: hidden;
+}
+.modal-content {
+  max-height: 80vh;
+  overflow-y: auto;
 }

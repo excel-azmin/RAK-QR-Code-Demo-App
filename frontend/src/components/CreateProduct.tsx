@@ -1,19 +1,25 @@
 import axios from "axios";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { useDispatch } from "react-redux";
+import { setModal } from "../redux/slice/ModalSlice";
 
 type Props = {
-  closer: () => void;
   refatch: () => void;
 };
 
-const CreateProduct = ({ closer, refatch }: Props) => {
+const CreateProduct = ({ refatch }: Props) => {
   const [itemName, setItemName] = useState("");
   const [itemCode, setItemCode] = useState("");
   const [series, setSeries] = useState("");
   const [stock, setStock] = useState("");
   const [productImage, setProductImage] = useState<File | null>(null);
+  const dispatch = useDispatch();
   const url = process.env.BASE_URL;
+
+  const closer = () => {
+    dispatch(setModal(false));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,6 +31,19 @@ const CreateProduct = ({ closer, refatch }: Props) => {
     formData.append("stock", stock);
     if (productImage) {
       formData.append("productImage", productImage);
+    }
+
+    if (!itemName) {
+      return toast.error("Item name is required");
+    }
+    if (!itemCode) {
+      return toast.error("Item code is required");
+    }
+    if (!stock) {
+      return toast.error("Item stock is required");
+    }
+    if (!productImage) {
+      return toast.error("Item Image is required");
     }
 
     try {
@@ -56,7 +75,7 @@ const CreateProduct = ({ closer, refatch }: Props) => {
         <form className="p-5 grid gap-3 md:gap-4" onSubmit={handleSubmit}>
           <div className="col-span-full sm:col-span-3">
             <label htmlFor="itemName" className="text-sm ">
-              Item Name
+              Item Name <sup className="text-red-500">*</sup>
             </label>
             <input
               id="itemName"
@@ -70,7 +89,7 @@ const CreateProduct = ({ closer, refatch }: Props) => {
 
           <div className="col-span-full sm:col-span-3">
             <label htmlFor="itemCode" className="text-sm ">
-              Item Code
+              Item Code <sup className="text-red-500">*</sup>
             </label>
             <input
               id="itemCode"
@@ -98,7 +117,7 @@ const CreateProduct = ({ closer, refatch }: Props) => {
 
           <div className="col-span-full sm:col-span-3">
             <label htmlFor="stock" className="text-sm ">
-              Stock
+              Stock <sup className="text-red-500">*</sup>
             </label>
             <input
               id="stock"
@@ -112,7 +131,7 @@ const CreateProduct = ({ closer, refatch }: Props) => {
 
           <div className="col-span-full sm:col-span-3">
             <label htmlFor="productImage" className="text-sm ">
-              Product Image
+              Product Image <sup className="text-red-500">*</sup>
             </label>
             <input
               id="productImage"
