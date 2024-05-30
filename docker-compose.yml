@@ -1,0 +1,46 @@
+version: '3.8' 
+
+services:
+  qrcode-api:
+    image: excelazmin/rak-qrcode-api:latest  
+    deploy:
+      restart_policy:
+        condition: on-failure
+      labels:
+        traefik.docker.network: traefik-public
+        traefik.enable: "true"
+        traefik.constraint-label: traefik-public
+        traefik.http.routers.rak-qr-demo-api-http.rule: Host(${API:?No API set})
+        traefik.http.routers.rak-qr-demo-api-http.entrypoints: http
+        traefik.http.routers.rak-qr-demo-api-http.middlewares: https-redirect
+        traefik.http.routers.rak-qr-demo-api-https.rule: Host(${API})
+        traefik.http.routers.rak-qr-demo-api-https.entrypoints: https
+        traefik.http.routers.rak-qr-demo-api-https.tls: "true"
+        traefik.http.routers.rak-qr-demo-api-https.tls.certresolver: le
+        traefik.http.services.rak-qr-demo-api.loadbalancer.server.port: "3000"
+    networks:
+      - traefik-public 
+  qrcode-web:
+    image: excelazmin/rak-qrcode-web:latest  
+    deploy:
+      restart_policy:
+        condition: on-failure
+      labels:
+        traefik.docker.network: traefik-public
+        traefik.enable: "true"
+        traefik.constraint-label: traefik-public
+        traefik.http.routers.rak-qr-demo-http.rule: Host(${SITE:?No sites set})
+        traefik.http.routers.rak-qr-demo-http.entrypoints: http
+        traefik.http.routers.rak-qr-demo-http.middlewares: https-redirect
+        traefik.http.routers.rak-qr-demo-https.rule: Host(${SITE})
+        traefik.http.routers.rak-qr-demo-https.entrypoints: https
+        traefik.http.routers.rak-qr-demo-https.tls: "true"
+        traefik.http.routers.rak-qr-demo-https.tls.certresolver: le
+        traefik.http.services.rak-qr-demo.loadbalancer.server.port: "80"
+    networks:
+      - traefik-public 
+
+networks:
+  traefik-public:
+    name: traefik-public
+    external: true

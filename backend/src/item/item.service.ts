@@ -22,7 +22,7 @@ export class ItemService {
     createItem.productImage = productImage.filename;
     const itemData = await createItem.save();
     const qrCodePath = await this.generateQrCodeWithLogo(
-      `http://192.168.110.187:5173/product/${itemData._id}`,
+      `https://qrdemo.arcapps.org/product/${itemData._id}`,
       'src/assets/images.png',
       './uploads/qrcode/', // Ensure this directory exists or is created dynamically
     );
